@@ -94,14 +94,10 @@ public class RestControllerAuth {
         
         //Captura el nombre de usaurio
         String username = authentication.getName();
-        // Capturar el rol del usuario autenticado
-        String role = "";
-        for (GrantedAuthority authority : authentication.getAuthorities()) {
-            role = authority.getAuthority();
-            break; // Si solo necesitas el primer rol, puedes romper el bucle aquí.
-        }
+        //Buscamos por nombre de usuario ya que debe exisitr un unico nombre de usuario
+        Usuarios usuario = usuariosService.findByUsername(username).get();
 
-        return new ResponseEntity<>(new DtoAuthRespuesta(token, role, username), HttpStatus.OK);
+        return new ResponseEntity<>(new DtoAuthRespuesta(token, usuario), HttpStatus.OK);
     }
     
     @PostMapping("/logout")
@@ -111,7 +107,7 @@ public class RestControllerAuth {
         // Add the token to the blacklist
         tokenBlacklist.add(token);
 
-        return new ResponseEntity<>(new DtoAuthRespuesta(null, null, null), HttpStatus.OK);
+        return new ResponseEntity<>(new DtoAuthRespuesta(null,null), HttpStatus.OK);
     }
 
     private boolean isTokenBlacklisted(String token) {
