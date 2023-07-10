@@ -26,6 +26,7 @@ import proyecto.auth.security.JwtGenerador;
 import proyecto.auth.services.RolesService;
 import proyecto.auth.services.UsuariosService;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -59,11 +60,16 @@ public class RestControllerAuth {
             return new ResponseEntity(new ResponseMessageDto("Ya existe usuario con ese nombre de usuario", HttpStatus.BAD_REQUEST.value()), HttpStatus.BAD_REQUEST);
         }
         Usuarios usuarios = new Usuarios();
+        
         usuarios.setUsername(dtoRegistro.getUsername());
         usuarios.setPassword(passwordEncoder.encode(dtoRegistro.getPassword()));
         usuarios.setEmail(dtoRegistro.getEmail());
+        usuarios.setPhone(dtoRegistro.getPhone());
+        usuarios.setAddress(dtoRegistro.getAddress());
+        usuarios.setCreatedAt(LocalDateTime.now());
         Roles roles = rolesService.findByName("USER").get();
         usuarios.setRoles(Collections.singletonList(roles));
+        
         usuariosService.save(usuarios);
         return new ResponseEntity(new ResponseMessageDto("Usuario registrado correctamente", HttpStatus.OK.value()), HttpStatus.OK);
     }
@@ -78,6 +84,9 @@ public class RestControllerAuth {
         usuarios.setUsername(dtoRegistro.getUsername());
         usuarios.setEmail(dtoRegistro.getEmail());
         usuarios.setPassword(passwordEncoder.encode(dtoRegistro.getPassword()));
+        usuarios.setPhone(dtoRegistro.getPhone());
+        usuarios.setAddress(dtoRegistro.getAddress());
+        usuarios.setCreatedAt(LocalDateTime.now());
         Roles roles = rolesService.findByName("ADMIN").get();
         usuarios.setRoles(Collections.singletonList(roles));
         usuariosService.save(usuarios);
